@@ -1,0 +1,20 @@
+{
+  "name": "RAST — Survive the Static",
+  "short_name": "RAST",
+  "description": "A neon 2D survival arcade game. Drag to fly, auto-fire, and outlast the signal swarm.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#03040a",
+  "theme_color": "#03040a",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

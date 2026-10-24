@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#03040a">
+  <meta name="description" content="RAST — a neon 2D survival arcade game. Drag to fly, auto-fire, and outlast the signal swarm.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RAST">
+  <title>RAST — Survive the Static</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="booting">
+  <div id="boot" class="boot" aria-hidden="true">
+    <div class="boot-inner">
+      <div class="boot-mark"><span></span></div>
+      <div class="boot-logo">RAST</div>
+      <div class="boot-sub">CALIBRATING ARRAY</div>
+      <div class="boot-track"><i></i></div>
+      <div class="boot-foot">NEON SURVIVAL PROTOCOL <b>// 001</b></div>
+    </div>
+  </div>
+
+  <main id="app">
+    <canvas id="game" aria-label="RAST game arena" role="img"></canvas>
+
+    <header id="hud" class="hud" hidden>
+      <div class="hud-left">
+        <div class="hud-block">
+          <span class="hud-kicker">SCORE</span>
+          <div class="score-line">
+            <span id="scoreValue" class="score-value">0</span>
+            <span id="multiplier" class="multiplier">×1</span>
+          </div>
+        </div>
+        <div class="combo">
+          <span id="comboLabel">COMBO 0</span>
+          <div class="combo-track"><i id="comboFill"></i></div>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <span class="hud-kicker">WAVE</span>
+        <div id="waveValue" class="wave-value">01</div>
+        <div class="wave-track"><i id="waveFill"></i></div>
+      </div>
+
+      <div class="hud-right">
+        <span class="hud-kicker">HULL</span>
+        <div id="hullCells" class="hull-cells"></div>
+        <span id="hullStatus" class="hull-status">STABLE</span>
+      </div>
+    </header>
+
+    <button id="pauseBtn" class="icon-btn pause-btn" type="button" aria-label="Pause game" hidden>
+      <span></span><span></span>
+    </button>
+
+    <div id="overdrive" class="overdrive" hidden>
+      <div class="od-label"><span>OVERDRIVE</span><span id="odPct">0%</span></div>
+      <div class="od-track"><i id="odFill"></i></div>
+    </div>
+
+    <div id="dashWrap" class="dash-wrap" hidden>
+      <button id="dashBtn" class="dash-btn" type="button" aria-label="Dash">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="dash-track" cx="50" cy="50" r="44"></circle>
+          <circle id="dashArc" class="dash-arc" cx="50" cy="50" r="44"></circle>
+        </svg>
+        <span class="dash-word">DASH</span>
+        <span class="dash-key">SPACE</span>
+      </button>
+    </div>
+
+    <div id="waveBanner" class="wave-banner" aria-live="polite">
+      <strong id="waveTitle">WAVE 01</strong>
+      <span id="waveSub">SIGNAL RISING</span>
+    </div>
+
+    <section id="menu" class="overlay menu">
+      <div class="menu-top">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <span>RAST SYSTEMS</span>
+          <span class="brand-id">// 001</span>
+        </div>
+        <button id="soundBtn" class="sound-btn" type="button" aria-label="Mute audio">
+          <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7"/><path class="wave" d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+          <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
+          <span id="soundLabel">SOUND ON</span>
+        </button>
+      </div>
+
+      <div class="menu-content">
+        <p class="eyebrow"><i></i>NEON SURVIVAL PROTOCOL<i></i></p>
+        <h1 class="logo"><span data-text="RAST">RAST</span></h1>
+        <p class="tagline">SURVIVE THE <em>STATIC</em></p>
+        <p class="lede">Drag to fly. The array fires for you. Outlast the swarm<br class="wide"> and turn every kill into overdrive.</p>
+
+        <button id="playBtn" class="btn btn-primary play-btn" type="button" aria-label="Play">PLAY</button>
+
+        <div class="menu-stats">
+          <div><span>BEST SIGNAL</span><b id="bestValue">0</b></div>
+          <div class="stat-divider"></div>
+          <div><span>PILOT RANK</span><b id="rankValue">RECRUIT</b></div>
+        </div>
+      </div>
+
+      <div class="menu-bottom">
+        <div class="hint"><span class="hint-glyph">⟲</span><span>DRAG TO STEER</span></div>
+        <div class="hint"><span class="hint-glyph">◎</span><span>AUTO FIRE</span></div>
+        <div class="hint"><span class="hint-glyph">⌁</span><span>DASH TO PHASE</span></div>
+        <div class="hint wide"><span class="hint-glyph">⌨</span><span>WASD · SPACE · P</span></div>
+      </div>
+
+      <div class="frame" aria-hidden="true">
+        <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      </div>
+    </section>
+
+    <section id="gameOver" class="overlay result" hidden>
+      <div class="result-panel">
+        <p class="eyebrow"><i></i>TRANSMISSION ENDED<i></i></p>
+        <h2 class="glitch-title" data-text="SIGNAL LOST">SIGNAL LOST</h2>
+        <p id="newBest" class="new-best" hidden>NEW BEST SIGNAL</p>
+
+        <div class="result-grid">
+          <div><span>SCORE</span><b id="finalScore">0</b></div>
+          <div><span>WAVE</span><b id="finalWave">1</b></div>
+          <div><span>KILLS</span><b id="finalKills">0</b></div>
+          <div><span>TIME</span><b id="finalTime">0:00</b></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="retryBtn" class="btn btn-primary" type="button">PLAY AGAIN</button>
+          <button id="menuBtn" class="btn btn-ghost" type="button">MAIN MENU</button>
+        </div>
+        <p class="result-foot">RAST ARRAY // SIGNAL v1.0</p>
+      </div>
+    </section>
+
+    <section id="pauseOverlay" class="overlay pause" hidden>
+      <div class="pause-panel">
+        <p class="eyebrow"><i></i>LINK SUSPENDED<i></i></p>
+        <h2 class="glitch-title small" data-text="PAUSED">PAUSED</h2>
+        <div class="pause-actions">
+          <button id="resumeBtn" class="btn btn-primary" type="button">RESUME</button>
+          <button id="restartBtn" class="btn btn-ghost" type="button">RESTART</button>
+          <button id="quitBtn" class="btn btn-ghost" type="button">QUIT</button>
+        </div>
+        <button id="pauseSoundBtn" class="sound-btn inline" type="button" aria-label="Mute audio">
+          <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7"/><path class="wave" d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+          <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
+          <span id="pauseSoundLabel">SOUND ON</span>
+        </button>
+      </div>
+    </section>
+
+    <button id="touchHint" class="touch-hint" type="button" aria-label="Dismiss controls hint" hidden>
+      <span class="touch-ring"><i></i></span>
+      <span>DRAG ANYWHERE TO FLY</span>
+    </button>
+  </main>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
